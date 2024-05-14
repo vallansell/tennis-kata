@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: tennis
+  main:
+    allow-bean-definition-overriding: true

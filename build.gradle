@@ -1,0 +1,70 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'fr.kata'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    acceptanceImplementation.extendsFrom testImplementation
+    acceptanceRuntimeOnly.extendsFrom runtimeOnly
+
+    integrationImplementation.extendsFrom testImplementation
+    integrationRuntimeOnly.extendsFrom runtimeOnly
+
+}
+
+sourceSets {
+    acceptance {
+        java.srcDir 'src/acceptance/java'
+        resources.srcDir 'src/acceptance/resources'
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+    integration {
+        java.srcDir 'src/integration/java'
+        resources.srcDir 'src/integration/resources'
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+tasks.named('processAcceptanceResources') {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'io.vavr:vavr:0.10.4'
+    implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    acceptanceImplementation 'net.serenity-bdd:serenity-junit:3.9.8'
+    acceptanceImplementation 'net.serenity-bdd:serenity-cucumber:3.9.8'
+    acceptanceImplementation 'net.serenity-bdd:serenity-screenplay-rest:3.9.8'
+    acceptanceImplementation 'net.serenity-bdd:serenity-core:3.9.8'
+    acceptanceImplementation 'net.serenity-bdd:serenity-spring:3.9.8'
+
+    integrationImplementation('org.springframework.boot:spring-boot-starter-undertow')
+    integrationImplementation("org.springframework.security:spring-security-test")
+    integrationImplementation('io.rest-assured:spring-mock-mvc')
+    integrationImplementation('com.squareup.okhttp3:mockwebserver')
+    integrationImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+    integrationImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
+}
